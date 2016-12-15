@@ -108,8 +108,26 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:id="@+id/timeEdit"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:clickable="false">
         </TimePicker>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Time"
+        android:textColor="#ffffff"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:background="#fd8701"
+        android:padding="7dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/timeEdit"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:id="@+id/timeBtn"
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -119,7 +137,7 @@
         android:textStyle="bold"
         android:textSize="16sp"
         android:layout_marginLeft="15dp"
-        android:layout_below="@+id/timeEdit"
+        android:layout_below="@+id/timeBtn"
         android:layout_marginTop="15dp"
         android:id="@+id/dateLbl"/>
 

@@ -3,6 +3,7 @@ package com.example.asus.lrucachepracticewithdatabase.Activities;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -31,6 +32,7 @@ public class ToDoActivity extends AppCompatActivity {
 
     FloatingActionButton newToDO;
     ArrayList<ToDoModel> arr;
+    ArrayList<ToDoModel> doneActivities;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +56,8 @@ public class ToDoActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(ToDoActivity.this,CreateToDoActivity.class),1);
             }
         });
+
+        retriveData();
     }
 
     @Override
@@ -70,16 +74,18 @@ public class ToDoActivity extends AppCompatActivity {
             ToDoModel tdm = new ToDoModel(
                     arrays.get(0).getTitle(),
                     arrays.get(0).getDescription(),
+                    arrays.get(0).getHours(),
+                    arrays.get(0).getMinutes(),
                     arrays.get(0).getMonth(),
                     arrays.get(0).getDay(),
-                    arrays.get(0).getYear(),
-                    arrays.get(0).getHours(),
-                    arrays.get(0).getMinutes());
+                    arrays.get(0).getYear());
+
             arr.add(tdm);
 
             Gson gson2 = new Gson();
             String json = gson2.toJson(arr);
-            Toast.makeText(this, json, Toast.LENGTH_SHORT).show();
+
+
             FragmentManager fragmentManager = getFragmentManager();
             Bundle bundle = new Bundle();
             bundle.putString("arrayList", json);
@@ -88,5 +94,48 @@ public class ToDoActivity extends AppCompatActivity {
 
             fragmentManager.beginTransaction().replace(R.id.frameContainer,fragobj).commit();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences prefs = getSharedPreferences("resume",0);
+        SharedPreferences.Editor editor = prefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(arr);
+        editor.putString("getThis",json);
+        editor.commit();
+    }
+
+    public void retriveData(){
+        SharedPreferences sharedPreferences = getSharedPreferences("resume",0);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("getThis",null);
+        Type type = new TypeToken<ArrayList<ToDoModel>>(){}.getType();
+        ArrayList<ToDoModel> arrayList = gson.fromJson(json, type);
+        if (arrayList!= null) {
+            for (int i = 0; i < arrayList.size(); i++) {
+                ToDoModel tdm = new ToDoModel(
+                        arrayList.get(i).getTitle(),
+                        arrayList.get(i).getDescription(),
+                        arrayList.get(i).getHours(),
+                        arrayList.get(i).getMinutes(),
+                        arrayList.get(i).getMonth(),
+                        arrayList.get(i).getDay(),
+                        arrayList.get(i).getYear());
+                arr.add(tdm);
+            }
+            FragmentManager fm = getFragmentManager();
+            Bundle bundle = new Bundle();
+            bundle.putString("arrayList", json);
+            ToDoListItemsFragment fragobj = new ToDoListItemsFragment();
+            fragobj.setArguments(bundle);
+
+            fm.beginTransaction().replace(R.id.frameContainer,fragobj).commit();
+        }
+    }
+
+    public void removeData(int position){
+        arr.remove(position);
     }
 }

@@ -3,9 +3,10 @@ package com.example.asus.lrucachepracticewithdatabase.Activities;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.icu.util.Calendar;
+import java.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,6 +27,7 @@ import com.example.asus.lrucachepracticewithdatabase.R;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Acer on 15/12/2016.
@@ -34,11 +36,12 @@ import java.util.ArrayList;
 public class CreateToDoActivity extends AppCompatActivity {
     EditText titleInput,descInput;
     TimePicker timePicker;
-    Button selectDate;
+    Button selectDate,timeBtn;
     TextView mm,dd,yy,cancel,finish;
+    ToDoModel tdm;
     LruCache <String,ToDoModel>mMemoryCache;
     ArrayList<ToDoModel> arrayList;
-    int m,d,y;
+    int m,d,y,hrs,min;
 
     String [] dates = {
             "January",
@@ -67,8 +70,9 @@ public class CreateToDoActivity extends AppCompatActivity {
 
         titleInput = (EditText) findViewById(R.id.titleEdit);
         descInput = (EditText) findViewById(R.id.descriptionEdit);
-        timePicker = (TimePicker) findViewById(R.id.timeEdit);
         selectDate = (Button) findViewById(R.id.dateBtn);
+        timePicker = (TimePicker)findViewById(R.id.timeEdit) ;
+        timeBtn = (Button) findViewById(R.id.timeBtn);
         cancel = (TextView) findViewById(R.id.cancel);
         finish = (TextView) findViewById(R.id.finish);
 
@@ -87,16 +91,34 @@ public class CreateToDoActivity extends AppCompatActivity {
         };
         //LRU ZONE
 
+
+        timeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+                hrs = calendar.get(Calendar.HOUR_OF_DAY);
+                min = calendar.get(Calendar.MINUTE);
+                    TimePickerDialog tpd = new TimePickerDialog(v.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        hrs = hourOfDay;
+                        min = minute;
+                        timePicker.setCurrentHour(hrs);
+                        timePicker.setCurrentMinute(min);
+                    }
+                },hrs,min,false);
+                tpd.show();
+                }
+        });
+
+
         selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar calendar = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    calendar = Calendar.getInstance();
-                    y = calendar.get(Calendar.YEAR);
-                    m = calendar.get(Calendar.MONTH);
-                    d = calendar.get(Calendar.DAY_OF_MONTH);
-                }
+                Calendar calendar = Calendar.getInstance();
+                m = calendar.get(Calendar.MONTH);
+                d = calendar.get(Calendar.DAY_OF_MONTH);
+                y = calendar.get(Calendar.YEAR);
                     DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -109,45 +131,32 @@ public class CreateToDoActivity extends AppCompatActivity {
                         }
                     },y,m,d);
                     datePickerDialog.show();
+                Toast.makeText(CreateToDoActivity.this, "" + hrs + "/" + min, Toast.LENGTH_SHORT).show();
                 }
         });
 
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    ToDoModel tdm = new ToDoModel(
+                tdm = new ToDoModel(
                             titleInput.getText().toString(),
                             descInput.getText().toString(),
-                            timePicker.getHour(),
-                            timePicker.getMinute(),
-                            m,
-                            d,
-                            y
-                    );
-                }
-                else {
-                    ToDoModel tdm = new ToDoModel(
-                            titleInput.getText().toString(),
-                            descInput.getText().toString(),
-                            timePicker.getCurrentHour(),
-                            timePicker.getCurrentMinute(),
-                            m,
+                            hrs,
+                            min,
+                            m+1,
                             d,
                             y
                     );
                     mMemoryCache.put("keys",tdm);
                     ToDoModel finalTdm = new ToDoModel(mMemoryCache.get("keys"));
-                    arrayList.add(finalTdm);
+                    arrayList.add(tdm);
                     Gson gson = new Gson();
                     String json = gson.toJson(arrayList);
                     Intent intent = new Intent();
                     intent.putExtra("pass",json);
                     setResult(Activity.RESULT_OK,intent);
                     finish();
-                }
             }
-
         });
     }
 }
