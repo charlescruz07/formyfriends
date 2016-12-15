@@ -5,15 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:background="#2C2C2C"
+        android:text="Activity Organizer"
+        android:textStyle="bold|italic"
+        android:textColor="#ffffff"
+        android:textSize="22sp"
+        android:id="@+id/appName"
+        android:padding="12dp"
+        android:elevation="20dp"
+        />
     <android.support.design.widget.TabLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_below="@id/appName"
         android:id="@+id/menu_tab"
         app:tabTextColor="#000000"
         app:tabIndicatorColor="#FFA500"
         app:tabSelectedTextColor="#000000">
 
     </android.support.design.widget.TabLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/frameContainer"
+        android:layout_below="@+id/menu_tab"></FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
@@ -23,6 +43,7 @@
         android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
         app:backgroundTint="@color/colorAccent"
-        android:src="@drawable/ic_add"/>
+        android:src="@drawable/ic_add"
+        android:id="@+id/addToDo"/>
 
 </RelativeLayout>

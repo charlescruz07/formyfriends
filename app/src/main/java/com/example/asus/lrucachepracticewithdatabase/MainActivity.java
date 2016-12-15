@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity{
             for (int i = 0; i < arrayList.size(); i++) {
                 String title = arrayList.get(i).getTitle();
                 String description = arrayList.get(i).getDescription();
-                models = new ToDoModel(title, description);
+//                models = new ToDoModel(title, description);
                 adapter.add(models);
                 inputss.add(models);
             }
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity{
             Toast.makeText(this, "nay sud", Toast.LENGTH_SHORT).show();
              titt = mMemoryCache.get("anton");
              d = mMemoryCache.get("kf");
-            models = new ToDoModel(titt,d);
+//            models = new ToDoModel(titt,d);
             adapter.add(models);
             adapter.notifyDataSetChanged();
         }
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity{
                 String d = mMemoryCache.get("kf");
                 Toast.makeText(MainActivity.this, titt+" "+d, Toast.LENGTH_SHORT).show();
 
-                models = new ToDoModel(inp.getText().toString(),desc.getText().toString());
+//                models = new ToDoModel(inp.getText().toString(),desc.getText().toString());
                 adapter.add(models);
                 inputss.add(models);
                 adapter.notifyDataSetChanged();
